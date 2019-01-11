@@ -33,7 +33,7 @@ UNIFEX_TERM create(UnifexEnv* env, int width, int height) {
     goto exit_create;
   }
 
-  texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_YV12, SDL_TEXTUREACCESS_STREAMING, width, height);
+  texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_IYUV, SDL_TEXTUREACCESS_STREAMING, width, height);
   if (!texture) {
     MEMBRANE_WARN(env, "Error creating texture: %s", SDL_GetError());
     err_reason = "create_texture";

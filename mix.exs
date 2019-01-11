@@ -56,6 +56,7 @@ defmodule Membrane.Element.Sdl.MixProject do
       {:membrane_core, "~> 0.2.0"},
       {:membrane_common_c, "~> 0.2.0"},
       {:membrane_caps_video_raw, "~> 0.1.0"},
+      {:bunch, path: "../bunch", override: true},
       {:unifex, "~> 0.1.1"},
       {:ex_doc, "~> 0.19", only: :dev, runtime: false},
       {:dialyxir, "~> 1.0.0-rc.4", only: [:dev], runtime: false}
