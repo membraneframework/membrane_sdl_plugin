@@ -1,24 +1,28 @@
 defmodule Membrane.Element.Sdl.Sink do
   alias Membrane.{Buffer, Time}
   alias Membrane.Caps.Video.Raw
-  alias __MODULE__.Native
+  alias Bundlex.CNode
+  require CNode
   use Membrane.Element.Base.Sink
 
-  def_input_pads input: [
-                   caps: Raw,
-                   demand_unit: :buffers
-                 ]
+  def_input_pad :input, caps: Raw, demand_unit: :buffers
 
   @impl true
   def handle_init(_options) do
-    {:ok, %{native: nil, timer: nil, expected_tick: nil, tick_err: nil}}
+    {:ok, %{cnode: nil, timer: nil, expected_tick: nil, tick_err: nil}}
+  end
+
+  @impl true
+  def handle_stopped_to_prepared(_ctx, state) do
+    {:ok, cnode} = CNode.start_link(:sink)
+    {:ok, %{state | cnode: cnode}}
   end
 
   @impl true
   def handle_caps(:input, caps, ctx, state) do
     if !ctx.pads.input.caps do
-      {:ok, native} = Native.create(caps.width, caps.height)
-      tick(caps, %{state | expected_tick: Time.monotonic_time(), tick_err: 0, native: native})
+      :ok = state.cnode |> CNode.call({:create, caps.width, caps.height})
+      tick(caps, %{state | expected_tick: Time.monotonic_time(), tick_err: 0})
     else
       {:ok, state}
     end
@@ -26,7 +30,8 @@ defmodule Membrane.Element.Sdl.Sink do
 
   @impl true
   def handle_write(:input, %Buffer{payload: payload}, _ctx, state) do
-    :ok = Native.display_frame(payload, state.native)
+    :ok = state.cnode |> CNode.call({:display_frame, payload})
+    Shmex.ensure_not_gc(payload)
     {:ok, state}
   end
 
@@ -37,11 +42,16 @@ defmodule Membrane.Element.Sdl.Sink do
 
   @impl true
   def handle_playing_to_prepared(_ctx, state) do
-    if state.native do
-      :ok = Native.destroy(state.native)
-    end
+    Process.cancel_timer(state.timer)
+    state = %{state | timer: nil}
+    :ok = state.cnode |> CNode.call({:destroy})
+    {:ok, state}
+  end
 
-    {:ok, %{state | native: nil}}
+  @impl true
+  def handle_prepared_to_stopped(_ctx, state) do
+    :ok = state.cnode |> CNode.stop()
+    {:ok, %{state | cnode: nil}}
   end
 
   defp tick(caps, state) do

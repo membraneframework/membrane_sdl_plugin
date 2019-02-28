@@ -1,6 +1,7 @@
 #pragma once
 
-#include "SDL.h"
+#include <SDL.h>
+#include <shmex/lib.h>
 
 typedef struct State {
   SDL_Window* window;
@@ -10,6 +11,7 @@ typedef struct State {
   int height;
 } State;
 
-typedef State UnifexNifState;
-
-#include "_generated/sink.h"
+int create(int width, int height, State* state);
+int display_frame(Shmex* payload, State* state);
+int destroy(State* state);
+void event_loop();

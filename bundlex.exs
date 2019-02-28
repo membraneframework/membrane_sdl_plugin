@@ -3,15 +3,15 @@ defmodule Membrane.Element.FFmpeg.SWResample.BundlexProject do
 
   def project do
     [
-      nifs: nifs(Bundlex.platform())
+      cnodes: cnodes(Bundlex.platform())
     ]
   end
 
-  defp nifs(_platform) do
+  defp cnodes(_platform) do
     [
       sink: [
-        sources: ["sink.c", "_generated/sink.c"],
-        deps: [unifex: :unifex, membrane_common_c: :membrane],
+        sources: ["sink.c", "cnodeserver.c"],
+        deps: [shmex: :lib_cnode],
         pkg_configs: ["sdl2"]
       ]
     ]
