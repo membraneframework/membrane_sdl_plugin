@@ -11,7 +11,7 @@ defmodule Membrane.Element.FFmpeg.SWResample.BundlexProject do
     [
       sink: [
         sources: ["sink.c", "cnodeserver.c"],
-        deps: [shmex: :lib_cnode],
+        deps: [shmex: :lib_cnode, bunch_native: :bunch],
         pkg_configs: ["sdl2"]
       ]
     ]

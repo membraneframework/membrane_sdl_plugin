@@ -4,6 +4,7 @@ defmodule Membrane.Element.Sdl.Sink do
   alias Bundlex.CNode
   require CNode
   use Membrane.Element.Base.Sink
+  use Bunch
 
   def_input_pad :input, caps: Raw, demand_unit: :buffers
 
@@ -20,24 +21,38 @@ defmodule Membrane.Element.Sdl.Sink do
 
   @impl true
   def handle_caps(:input, caps, ctx, state) do
-    if !ctx.pads.input.caps do
-      :ok = state.cnode |> CNode.call({:create, caps.width, caps.height})
+    %{cnode: cnode, timer: timer} = state
+    %{input: input} = ctx.pads
+
+    withl caps: true <- input.caps != caps,
+          stop: :ok <- if(input.caps, do: cnode |> CNode.call(:destroy), else: :ok),
+          call: :ok <- cnode |> CNode.call({:create, caps.width, caps.height}) do
+      if timer, do: Process.cancel_timer(timer)
       tick(caps, %{state | expected_tick: Time.monotonic_time(), tick_err: 0})
     else
-      {:ok, state}
+      caps: false -> {:ok, state}
+      stop: :error -> {{:error, :destroy}, state}
+      call: :error -> {{:error, :create}, state}
     end
   end
 
   @impl true
   def handle_write(:input, %Buffer{payload: payload}, _ctx, state) do
-    :ok = state.cnode |> CNode.call({:display_frame, payload})
-    Shmex.ensure_not_gc(payload)
-    {:ok, state}
+    with :ok <- state.cnode |> CNode.call({:display_frame, payload}) do
+      Shmex.ensure_not_gc(payload)
+      {:ok, state}
+    else
+      :error -> {{:error, :display_frame}, state}
+    end
   end
 
   @impl true
-  def handle_other(:tick, ctx, state) do
+  def handle_other(:tick, %{playback_state: :playing} = ctx, state) do
     tick(ctx.pads.input.caps, state)
+  end
+
+  def handle_other(:tick, _ctx, state) do
+    {:ok, state}
   end
 
   @impl true

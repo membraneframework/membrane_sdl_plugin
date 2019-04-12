@@ -1,26 +1,25 @@
+#include <bunch/bunch.h>
+#include <errno.h>
+#include <fcntl.h>
 #include <stdio.h>
 #include <sys/mman.h>
-#include <fcntl.h>
 #include <unistd.h>
-#include <errno.h>
 
 #include "sink.h"
 
-int create(int width, int height, State* state) {
-  char* err_reason = NULL;
-  SDL_Window* window = NULL;
-  SDL_Renderer* renderer = NULL;
-  SDL_Texture* texture = NULL;
+int create(int width, int height, State *state) {
+  char *err_reason = NULL;
+  SDL_Window *window = NULL;
+  SDL_Renderer *renderer = NULL;
+  SDL_Texture *texture = NULL;
 
   if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-      err_reason = "init_sdl";
-      goto exit_create;
+    err_reason = "init_sdl";
+    goto exit_create;
   }
 
-  window = SDL_CreateWindow("Membrane",
-                            SDL_WINDOWPOS_UNDEFINED,
-                            SDL_WINDOWPOS_UNDEFINED,
-                            width, height,
+  window = SDL_CreateWindow("Membrane", SDL_WINDOWPOS_UNDEFINED,
+                            SDL_WINDOWPOS_UNDEFINED, width, height,
                             SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
 
   if (!window) {
@@ -36,7 +35,8 @@ int create(int width, int height, State* state) {
     goto exit_create;
   }
 
-  texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_IYUV, SDL_TEXTUREACCESS_STREAMING, width, height);
+  texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_IYUV,
+                              SDL_TEXTUREACCESS_STREAMING, width, height);
   if (!texture) {
     fprintf(stderr, "Error creating texture: %s", SDL_GetError());
     err_reason = "create_texture";
@@ -52,18 +52,22 @@ int create(int width, int height, State* state) {
   return 0;
 
 exit_create:
-  if(renderer) {
+  if (renderer) {
     SDL_DestroyRenderer(renderer);
   }
-  if(window) {
+  if (window) {
     SDL_Quit();
   }
   return 1;
 }
 
-int display_frame(Shmex* payload, State* state) {
+int display_frame(Shmex *payload, State *state) {
   int res = 0;
-  if(SHMEX_RES_OK != shmex_open_and_mmap(payload)) {
+  ShmexLibResult shmex_res = SHMEX_RES_OK;
+  shmex_res = shmex_open_and_mmap(payload);
+  if (SHMEX_RES_OK != shmex_res) {
+    fprintf(stderr, "shmex_open_and_mmap error: %s, errno: %s\r\n",
+            shmex_lib_result_to_string(shmex_res), bunch_errno_string());
     res = 1;
     goto display_frame_exit;
   }
@@ -73,18 +77,20 @@ int display_frame(Shmex* payload, State* state) {
   SDL_RenderCopy(state->renderer, state->texture, NULL, NULL);
   SDL_RenderPresent(state->renderer);
 
-  if(SHMEX_RES_OK != shmex_unlink(payload)) {
+  shmex_res = shmex_unlink(payload);
+  if (SHMEX_RES_OK != shmex_res) {
+    fprintf(stderr, "shmex_unlink error: %s, errno: %s\r\n",
+            shmex_lib_result_to_string(shmex_res), bunch_errno_string());
     res = 1;
     goto display_frame_exit;
   }
 
 display_frame_exit:
-
   shmex_release(payload);
   return res;
 }
 
-int destroy(State* state) {
+int destroy(State *state) {
   SDL_DestroyRenderer(state->renderer);
   SDL_Quit();
   return 0;
