@@ -1,2 +1,0 @@
-OTPROOT=/usr/local/Cellar/erlang/21.2.2/lib/erlang/lib/erl_interface-3.10.4/
-gcc -o priv/cnodeserver -L$OTPROOT/lib -I$OTPROOT/include c_src/cnodeserver.c c_src/sdl_sink.c -lei -Wextra -Wall `pkg-config --cflags --libs sdl2`

@@ -57,8 +57,7 @@ defmodule Membrane.Element.Sdl.MixProject do
       {:membrane_common_c, "~> 0.2"},
       {:membrane_caps_video_raw, "~> 0.1"},
       {:unifex, "~> 0.2.0"},
-      # {:bundlex, "~> 0.2.0"},
-      {:bundlex, path: "../bundlex", override: true},
+      {:bundlex, "~> 0.2.0"},
       {:shmex, path: "../shmex", override: true},
       {:ex_doc, "~> 0.19", only: :dev, runtime: false},
       {:dialyxir, "~> 1.0.0-rc.4", only: [:dev], runtime: false}

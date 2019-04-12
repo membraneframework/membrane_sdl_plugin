@@ -13,6 +13,12 @@
 #include <ei_connect.h>
 #include <erl_interface.h>
 
+#ifdef CNODE_DEBUG
+#define DEBUG(X, ...) fprintf(stderr, X "\r\n", ##__VA_ARGS__)
+#else
+#define DEBUG(...)
+#endif
+
 int listen_sock(int *listen_fd, int *port) {
   int fd = socket(AF_INET, SOCK_STREAM, 0);
   if (fd < 0) {
@@ -87,13 +93,6 @@ int handle_message(int ei_fd, char *node_name, erlang_msg emsg,
     res = destroy(state);
   }
 
-  if (!strcmp(fun, "type")) {
-    int type, size;
-    ei_get_type(in_buf->buff, &decode_idx, &type, &size);
-    fprintf(stderr, "type: %c, size: %d", type, size);
-    res = 0;
-  }
-
   if (ei_x_encode_tuple_header(&out_buf, 2) ||
       ei_x_encode_atom(&out_buf, node_name) ||
       ei_x_encode_atom(&out_buf, res ? "error" : "ok")) {
@@ -107,7 +106,7 @@ int handle_message(int ei_fd, char *node_name, erlang_msg emsg,
 
 handle_message_error:
   ei_x_free(&out_buf);
-  fprintf(stderr, "Message handling error\r\n");
+  DEBUG("Message handling error");
   return 1;
 }
 
@@ -119,7 +118,6 @@ int receive(int ei_fd, char *node_name, State *state) {
   event_loop();
   switch (ei_xreceive_msg_tmo(ei_fd, &emsg, &in_buf, 100)) {
   case ERL_TICK:
-    // fprintf(stderr, "erl_tick\r\n");
     break;
   case ERL_ERROR:
     res = erl_errno != ETIMEDOUT;
@@ -168,37 +166,36 @@ int main(int argc, char **argv) {
   int listen_fd;
   int port;
   if (listen_sock(&listen_fd, &port)) {
-    fprintf(stderr, "listen error\r\n");
+    DEBUG("listen error");
     return 1;
   }
-  fprintf(stderr, "listening at %d\r\n", port);
+  DEBUG("listening at %d", port);
 
   ei_cnode ec;
   struct in_addr addr;
   addr.s_addr = inet_addr("127.0.0.1");
   if (ei_connect_xinit(&ec, host_name, alive_name, node_name, &addr, cookie,
                        creation) < 0) {
-    fprintf(stderr, "init error: %d\r\n", erl_errno);
+    DEBUG("init error: %d", erl_errno);
     return 1;
   }
-  fprintf(stderr, "initialized %s (%s)\r\n", ei_thisnodename(&ec),
-          inet_ntoa(addr));
+  DEBUG("initialized %s (%s)", ei_thisnodename(&ec), inet_ntoa(addr));
 
   if (ei_publish(&ec, port) == -1) {
-    fprintf(stderr, "publish error: %d\r\n", erl_errno);
+    DEBUG("publish error: %d", erl_errno);
     return 1;
   }
-  fprintf(stderr, "published\r\n");
+  DEBUG("published");
   printf("ready\r\n");
   fflush(stdout);
 
   ErlConnect conn;
   int ei_fd = ei_accept_tmo(&ec, listen_fd, &conn, 5000);
   if (ei_fd == ERL_ERROR) {
-    fprintf(stderr, "accept error: %d\r\n", erl_errno);
+    DEBUG("accept error: %d", erl_errno);
     return 1;
   }
-  fprintf(stderr, "accepted %s\r\n", conn.nodename);
+  DEBUG("accepted %s", conn.nodename);
 
   State state;
 
@@ -209,11 +206,11 @@ int main(int argc, char **argv) {
     case 0:
       break;
     case 1:
-      fprintf(stderr, "disconnected\r\n");
+      DEBUG("disconnected");
       cont = 0;
       break;
     default:
-      fprintf(stderr, "error handling message, disconnecting\r\n");
+      DEBUG("error handling message, disconnecting");
       cont = 0;
       res = 1;
       break;
