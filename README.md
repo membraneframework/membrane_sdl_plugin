@@ -20,25 +20,27 @@ The docs can be found at [HexDocs](https://hexdocs.pm/membrane_element_sdl).
 
 ## Usage
 
-The pipeline below displays a h264 video from a file:
+The pipeline below displays a sample h264 video from the net:
 
 ```elixir
 defmodule My.Pipeline do
-  alias Membrane.Element.{File, FFmpeg.H264, Sdl}
+  alias Membrane.Element.{FFmpeg.H264, Hackney, Sdl}
   alias Membrane.Pipeline.Spec
   use Membrane.Pipeline
 
   @impl true
   def handle_init(_) do
     children = [
-      file: %File.Source{location: "path/to/file.h264"},
-      parser: %H264.Parser{framerate: {24, 1}},
+      hackney: %Hackney.Source{
+        location: "https://membraneframework.github.io/static/video-samples/test-video.h264"
+      },
+      parser: %H264.Parser{framerate: {30, 1}},
       decoder: H264.Decoder,
       sdl: Sdl.Sink
     ]
 
     links = %{
-      {:file, :output} => {:parser, :input},
+      {:hackney, :output} => {:parser, :input},
       {:parser, :output} => {:decoder, :input},
       {:decoder, :output} => {:sdl, :input}
     }
@@ -46,6 +48,7 @@ defmodule My.Pipeline do
     {{:ok, %Spec{children: children, links: links}}, %{}}
   end
 end
+
 ```
 
 ## Copyright and License
