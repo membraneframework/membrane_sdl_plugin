@@ -20,7 +20,7 @@ The docs can be found at [HexDocs](https://hexdocs.pm/membrane_element_sdl).
 
 ## Usage
 
-The pipeline below displays a sample h264 video from the net:
+The pipeline below displays a sample h264 video from the net (with use of [Hackney](https://github.com/membraneframework/membrane-element-hackney) and [H264](https://github.com/membraneframework/membrane-element-ffmpeg-h264) elements):
 
 ```elixir
 defmodule My.Pipeline do
