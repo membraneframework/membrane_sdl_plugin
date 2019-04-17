@@ -1,4 +1,4 @@
-defmodule Membrane.Element.FFmpeg.SWResample.BundlexProject do
+defmodule Membrane.Element.Sdl.BundlexProject do
   use Bundlex.Project
 
   def project do
