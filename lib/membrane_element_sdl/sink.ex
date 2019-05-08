@@ -51,6 +51,7 @@ defmodule Membrane.Element.Sdl.Sink do
     tick(ctx.pads.input.caps, state)
   end
 
+  @impl true
   def handle_other(:tick, _ctx, state) do
     {:ok, state}
   end
@@ -59,7 +60,7 @@ defmodule Membrane.Element.Sdl.Sink do
   def handle_playing_to_prepared(_ctx, state) do
     Process.cancel_timer(state.timer)
     state = %{state | timer: nil}
-    :ok = state.cnode |> CNode.call({:destroy})
+    :ok = state.cnode |> CNode.call(:destroy)
     {:ok, state}
   end
 
