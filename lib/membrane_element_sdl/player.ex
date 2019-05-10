@@ -3,8 +3,9 @@ defmodule Membrane.Element.SDL.Player do
   This module provides an [SDL](https://www.libsdl.org/)-based video player sink.
   """
 
-  alias Membrane.{Buffer, Time}
+  alias Membrane.{Buffer, Sync, Time}
   alias Membrane.Caps.Video.Raw
+  alias Membrane.Event.StartOfStream
   alias Bundlex.CNode
   require CNode
   use Membrane.Element.Base.Sink
@@ -12,9 +13,12 @@ defmodule Membrane.Element.SDL.Player do
 
   def_input_pad :input, caps: Raw, demand_unit: :buffers
 
+  def_options sync: [], clock: []
+
   @impl true
-  def handle_init(_options) do
-    {:ok, %{cnode: nil, timer: nil, expected_tick: nil, tick_err: nil}}
+  def handle_init(%__MODULE__{sync: sync, clock: clock}) do
+    :ok = Sync.register(sync)
+    {:ok, %{cnode: nil, clock: clock, sync: sync, synced?: false}}
   end
 
   @impl true
@@ -25,19 +29,23 @@ defmodule Membrane.Element.SDL.Player do
 
   @impl true
   def handle_caps(:input, caps, ctx, state) do
-    %{cnode: cnode, timer: timer} = state
     %{input: input} = ctx.pads
 
-    withl caps: true <- input.caps != caps,
-          stop: :ok <- if(input.caps, do: cnode |> CNode.call(:destroy), else: :ok),
-          call: :ok <- cnode |> CNode.call({:create, caps.width, caps.height}) do
-      if timer, do: Process.cancel_timer(timer)
-      tick(caps, %{state | expected_tick: Time.monotonic_time(), tick_err: 0})
+    if !input.caps || caps == input.caps do
+      {:ok, state}
     else
-      caps: false -> {:ok, state}
-      stop: :error -> {{:error, :destroy}, state}
-      call: :error -> {{:error, :create}, state}
+      {{:error, :caps_change}, state}
     end
+  end
+
+  @impl true
+  def handle_event(:input, %StartOfStream{}, _ctx, state) do
+    {{:ok, sync: state.sync}, state}
+  end
+
+  @impl true
+  def handle_event(pad, event, ctx, state) do
+    super(pad, event, ctx, state)
   end
 
   @impl true
@@ -50,21 +58,38 @@ defmodule Membrane.Element.SDL.Player do
     end
   end
 
-  @impl true
-  def handle_other(:tick, %{playback_state: :playing} = ctx, state) do
-    tick(ctx.pads.input.caps, state)
+  def handle_tick(_timer, _ctx, state) do
+    {{:ok, demand: :input}, state}
   end
 
-  @impl true
-  def handle_other(:tick, _ctx, state) do
+  def handle_sync(sync, ctx, %{sync: sync, synced?: false} = state) do
+    IO.inspect(:sdl_sync)
+    %{caps: caps} = ctx.pads.input
+    %{cnode: cnode} = state
+
+    with :ok <- cnode |> CNode.call({:create, caps.width, caps.height}) do
+      use Ratio
+      {nom, denom} = ctx.pads.input.caps.framerate
+
+      {{:ok, demand: :input, timer: {:timer, Time.seconds(denom) <|> nom, state.clock}},
+       %{state | synced?: true}}
+    else
+      :error -> {{:error, :create}, state}
+    end
+  end
+
+  def handle_synced(_sync, _ctx, state) do
     {:ok, state}
   end
 
   @impl true
-  def handle_playing_to_prepared(_ctx, state) do
-    Process.cancel_timer(state.timer)
-    state = %{state | timer: nil}
+  def handle_playing_to_prepared(_ctx, %{synced?: true} = state) do
     :ok = state.cnode |> CNode.call(:destroy)
+    {{:ok, untimer: :timer}, %{state | synced?: false}}
+  end
+
+  @impl true
+  def handle_playing_to_prepared(_ctx, state) do
     {:ok, state}
   end
 
@@ -72,13 +97,5 @@ defmodule Membrane.Element.SDL.Player do
   def handle_prepared_to_stopped(_ctx, state) do
     :ok = state.cnode |> CNode.stop()
     {:ok, %{state | cnode: nil}}
-  end
-
-  defp tick(caps, state) do
-    {nom, denom} = caps.framerate
-    {duration, err} = Bunch.Math.div_rem(1000 * denom, nom, state.tick_err)
-    next_tick = state.expected_tick + Time.milliseconds(duration)
-    timer = Process.send_after(self(), :tick, next_tick |> Time.to_milliseconds(), abs: true)
-    {{:ok, demand: :input}, %{state | tick_err: err, expected_tick: next_tick, timer: timer}}
   end
 end
