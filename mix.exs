@@ -2,7 +2,7 @@ defmodule Membrane.Element.Sdl.MixProject do
   use Mix.Project
 
   @version "0.1.0"
-  @github_url "https://github.com/membraneframework/membrane-element-membrane_element_sdl"
+  @github_url "https://github.com/membraneframework/membrane-element-sdl"
 
   def project do
     [
@@ -12,9 +12,9 @@ defmodule Membrane.Element.Sdl.MixProject do
       compilers: [:unifex, :bundlex] ++ Mix.compilers(),
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
-      description: "Membrane Multimedia Framework (MembraneElementSdl Element)",
+      description: "Membrane Multimedia Framework (Sdl Element)",
       package: package(),
-      name: "Membrane Element: MembraneElementSdl",
+      name: "Membrane Element: Sdl",
       source_url: @github_url,
       docs: docs(),
       homepage_url: "https://membraneframework.org",
@@ -56,7 +56,7 @@ defmodule Membrane.Element.Sdl.MixProject do
       {:membrane_core, "~> 0.3.0"},
       {:membrane_common_c, "~> 0.2.0"},
       {:membrane_caps_video_raw, "~> 0.1.0"},
-      {:bundlex, "~> 0.2.0"},
+      {:bundlex, "~> 0.2.6"},
       {:shmex, "~> 0.2.0"},
       {:ex_doc, "~> 0.19", only: :dev, runtime: false},
       {:dialyxir, "~> 1.0.0-rc.4", only: [:dev], runtime: false}

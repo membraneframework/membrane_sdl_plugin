@@ -1,6 +1,10 @@
-# Membrane Multimedia Framework: MembraneElementSdl
+# Membrane Multimedia Framework: Sdl element
 
-This package provides an SDL-based video player.
+[![Hex.pm](https://img.shields.io/hexpm/v/membrane_element_sdl.svg)](https://hex.pm/packages/membrane_element_sdl)
+[![API Docs](https://img.shields.io/badge/api-docs-yellow.svg?style=flat)](https://hexdocs.pm/membrane_element_sdl/)
+[![CircleCI](https://circleci.com/gh/membraneframework/membrane-element-sdl.svg?style=svg)](https://circleci.com/gh/membraneframework/membrane-element-sdl)
+
+This package provides an [Sdl](https://www.libsdl.org/)-based video player.
 
 It is part of [Membrane Multimedia Framework](https://membraneframework.org).
 
