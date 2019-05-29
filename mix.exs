@@ -1,4 +1,4 @@
-defmodule Membrane.Element.Sdl.MixProject do
+defmodule Membrane.Element.SDL.MixProject do
   use Mix.Project
 
   @version "0.1.0"
@@ -12,9 +12,9 @@ defmodule Membrane.Element.Sdl.MixProject do
       compilers: [:unifex, :bundlex] ++ Mix.compilers(),
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
-      description: "Membrane Multimedia Framework (Sdl Element)",
+      description: "Membrane Multimedia Framework (SDL Element)",
       package: package(),
-      name: "Membrane Element: Sdl",
+      name: "Membrane Element: SDL",
       source_url: @github_url,
       docs: docs(),
       homepage_url: "https://membraneframework.org",

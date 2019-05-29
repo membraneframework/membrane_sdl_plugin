@@ -1,6 +1,6 @@
-defmodule Membrane.Element.Sdl.Sink do
+defmodule Membrane.Element.SDL.Sink do
   @moduledoc """
-  This module provides an [Sdl](https://www.libsdl.org/)-based video player sink.
+  This module provides an [SDL](https://www.libsdl.org/)-based video player sink.
   """
 
   alias Membrane.{Buffer, Time}

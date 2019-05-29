@@ -1,4 +1,4 @@
-defmodule Membrane.Element.Sdl.BundlexProject do
+defmodule Membrane.Element.SDL.BundlexProject do
   use Bundlex.Project
 
   def project do

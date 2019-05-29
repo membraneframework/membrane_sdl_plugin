@@ -1,10 +1,10 @@
-# Membrane Multimedia Framework: Sdl element
+# Membrane Multimedia Framework: SDL element
 
 [![Hex.pm](https://img.shields.io/hexpm/v/membrane_element_sdl.svg)](https://hex.pm/packages/membrane_element_sdl)
 [![API Docs](https://img.shields.io/badge/api-docs-yellow.svg?style=flat)](https://hexdocs.pm/membrane_element_sdl/)
 [![CircleCI](https://circleci.com/gh/membraneframework/membrane-element-sdl.svg?style=svg)](https://circleci.com/gh/membraneframework/membrane-element-sdl)
 
-This package provides an [Sdl](https://www.libsdl.org/)-based video player.
+This package provides an [SDL](https://www.libsdl.org/)-based video player.
 
 It is part of [Membrane Multimedia Framework](https://membraneframework.org).
 
@@ -28,7 +28,7 @@ The pipeline below displays a sample h264 video from the net (with use of [Hackn
 
 ```elixir
 defmodule My.Pipeline do
-  alias Membrane.Element.{FFmpeg.H264, Hackney, Sdl}
+  alias Membrane.Element.{FFmpeg.H264, Hackney, SDL}
   alias Membrane.Pipeline.Spec
   use Membrane.Pipeline
 
@@ -40,7 +40,7 @@ defmodule My.Pipeline do
       },
       parser: %H264.Parser{framerate: {30, 1}},
       decoder: H264.Decoder,
-      sdl: Sdl.Sink
+      sdl: SDL.Sink
     ]
 
     links = %{
