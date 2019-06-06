@@ -8,7 +8,7 @@
 #define _REENTRANT // For some reason __erl_errno is undefined unless _REENTRANT
                    // is defined
 #endif
-#include "sink.h"
+#include "player.h"
 #include <ei.h>
 #include <ei_connect.h>
 #include <erl_interface.h>

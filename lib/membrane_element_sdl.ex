@@ -1,4 +1,4 @@
-defmodule Membrane.Element.Sdl do
+defmodule Membrane.Element.SDL do
   @moduledoc false
   use Application
 

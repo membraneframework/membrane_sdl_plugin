@@ -5,16 +5,15 @@
 #include <sys/mman.h>
 #include <unistd.h>
 
-#include "sink.h"
+#include "player.h"
 
 int create(int width, int height, State *state) {
-  char *err_reason = NULL;
   SDL_Window *window = NULL;
   SDL_Renderer *renderer = NULL;
   SDL_Texture *texture = NULL;
 
   if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-    err_reason = "init_sdl";
+    fprintf(stderr, "Error initializing SDL\r\n");
     goto exit_create;
   }
 
@@ -23,23 +22,20 @@ int create(int width, int height, State *state) {
                             SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
 
   if (!window) {
-    fprintf(stderr, "Error creating window: %s", SDL_GetError());
-    err_reason = "create_window";
+    fprintf(stderr, "Error creating window: %s\r\n", SDL_GetError());
     goto exit_create;
   }
 
   renderer = SDL_CreateRenderer(window, -1, 0);
   if (!renderer) {
-    fprintf(stderr, "Error creating renderer: %s", SDL_GetError());
-    err_reason = "create_renderer";
+    fprintf(stderr, "Error creating renderer: %s\r\n", SDL_GetError());
     goto exit_create;
   }
 
   texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_IYUV,
                               SDL_TEXTUREACCESS_STREAMING, width, height);
   if (!texture) {
-    fprintf(stderr, "Error creating texture: %s", SDL_GetError());
-    err_reason = "create_texture";
+    fprintf(stderr, "Error creating texture: %s\r\n", SDL_GetError());
     goto exit_create;
   }
 
