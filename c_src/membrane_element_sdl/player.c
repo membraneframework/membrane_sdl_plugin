@@ -5,7 +5,7 @@
 #include <sys/mman.h>
 #include <unistd.h>
 
-#include "sink.h"
+#include "player.h"
 
 int create(int width, int height, State *state) {
   SDL_Window *window = NULL;

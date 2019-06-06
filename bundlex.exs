@@ -9,8 +9,8 @@ defmodule Membrane.Element.SDL.BundlexProject do
 
   defp cnodes(_platform) do
     [
-      sink: [
-        sources: ["sink.c", "cnodeserver.c"],
+      player: [
+        sources: ["player.c", "cnodeserver.c"],
         deps: [shmex: :lib_cnode, bunch_native: :bunch],
         pkg_configs: ["sdl2"]
       ]

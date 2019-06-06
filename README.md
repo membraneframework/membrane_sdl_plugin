@@ -40,7 +40,7 @@ defmodule My.Pipeline do
       },
       parser: %H264.Parser{framerate: {30, 1}},
       decoder: H264.Decoder,
-      sdl: SDL.Sink
+      sdl: SDL.Player
     ]
 
     links = %{
@@ -52,7 +52,6 @@ defmodule My.Pipeline do
     {{:ok, %Spec{children: children, links: links}}, %{}}
   end
 end
-
 ```
 
 ## Copyright and License

@@ -1,4 +1,4 @@
-defmodule Membrane.Element.SDL.Sink do
+defmodule Membrane.Element.SDL.Player do
   @moduledoc """
   This module provides an [SDL](https://www.libsdl.org/)-based video player sink.
   """
@@ -19,7 +19,7 @@ defmodule Membrane.Element.SDL.Sink do
 
   @impl true
   def handle_stopped_to_prepared(_ctx, state) do
-    {:ok, cnode} = CNode.start_link(:sink)
+    {:ok, cnode} = CNode.start_link(:player)
     {:ok, %{state | cnode: cnode}}
   end
 
