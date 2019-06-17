@@ -3,7 +3,7 @@ defmodule Membrane.Element.SDL.Player do
   This module provides an [SDL](https://www.libsdl.org/)-based video player sink.
   """
 
-  alias Membrane.{Buffer, Sync, Time}
+  alias Membrane.{Buffer, Time}
   alias Membrane.Caps.Video.Raw
   alias Membrane.Event.StartOfStream
   alias Bundlex.CNode
@@ -11,14 +11,15 @@ defmodule Membrane.Element.SDL.Player do
   use Membrane.Element.Base.Sink
   use Bunch
 
+  @experimental_latency 20 |> Time.milliseconds()
+
   def_input_pad :input, caps: Raw, demand_unit: :buffers
 
-  def_options sync: [], clock: []
+  def_options clock: []
 
   @impl true
-  def handle_init(%__MODULE__{sync: sync, clock: clock}) do
-    :ok = Sync.register(sync)
-    {:ok, %{cnode: nil, clock: clock, sync: sync, synced?: false}}
+  def handle_init(%__MODULE__{clock: clock}) do
+    {{:ok, latency: @experimental_latency}, %{cnode: nil, clock: clock, synced?: false}}
   end
 
   @impl true
@@ -30,17 +31,22 @@ defmodule Membrane.Element.SDL.Player do
   @impl true
   def handle_caps(:input, caps, ctx, state) do
     %{input: input} = ctx.pads
+    %{cnode: cnode} = state
 
     if !input.caps || caps == input.caps do
-      {:ok, state}
+      {cnode |> CNode.call({:create, caps.width, caps.height}), state}
     else
       {{:error, :caps_change}, state}
     end
   end
 
   @impl true
-  def handle_event(:input, %StartOfStream{}, _ctx, state) do
-    {{:ok, sync: state.sync}, state}
+  def handle_event(:input, %StartOfStream{}, ctx, state) do
+    use Ratio
+    {nom, denom} = ctx.pads.input.caps.framerate
+
+    {{:ok, demand: :input, timer: {:timer, Time.seconds(denom) <|> nom, state.clock}},
+     %{state | synced?: true}}
   end
 
   @impl true
@@ -62,25 +68,13 @@ defmodule Membrane.Element.SDL.Player do
     {{:ok, demand: :input}, state}
   end
 
-  def handle_sync(sync, ctx, %{sync: sync, synced?: false} = state) do
-    IO.inspect(:sdl_sync)
-    %{caps: caps} = ctx.pads.input
-    %{cnode: cnode} = state
-
-    with :ok <- cnode |> CNode.call({:create, caps.width, caps.height}) do
-      use Ratio
-      {nom, denom} = ctx.pads.input.caps.framerate
-
-      {{:ok, demand: :input, timer: {:timer, Time.seconds(denom) <|> nom, state.clock}},
-       %{state | synced?: true}}
-    else
-      :error -> {{:error, :create}, state}
-    end
-  end
-
-  def handle_synced(_sync, _ctx, state) do
-    {:ok, state}
-  end
+  # def handle_sync(sync, ctx, %{sync: sync, synced?: false} = state) do
+  #
+  # end
+  #
+  # def handle_synced(_sync, _ctx, state) do
+  #   {:ok, state}
+  # end
 
   @impl true
   def handle_playing_to_prepared(_ctx, %{synced?: true} = state) do
