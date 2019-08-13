@@ -15,11 +15,9 @@ defmodule Membrane.Element.SDL.Player do
 
   def_input_pad :input, caps: Raw, demand_unit: :buffers
 
-  def_options clock: []
-
   @impl true
-  def handle_init(%__MODULE__{clock: clock}) do
-    {{:ok, latency: @experimental_latency}, %{cnode: nil, clock: clock, synced?: false}}
+  def handle_init(_args) do
+    {{:ok, latency: @experimental_latency}, %{cnode: nil, synced?: false}}
   end
 
   @impl true
@@ -45,7 +43,7 @@ defmodule Membrane.Element.SDL.Player do
     use Ratio
     {nom, denom} = ctx.pads.input.caps.framerate
 
-    {{:ok, demand: :input, timer: {:timer, Time.seconds(denom) <|> nom, state.clock}},
+    {{:ok, demand: :input, timer: {:timer, Time.seconds(denom) <|> nom}},
      %{state | synced?: true}}
   end
 
