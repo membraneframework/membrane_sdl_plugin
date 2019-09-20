@@ -1,7 +1,7 @@
 defmodule Membrane.Element.SDL.MixProject do
   use Mix.Project
 
-  @version "0.2.0"
+  @version "0.2.1"
   @github_url "https://github.com/membraneframework/membrane-element-sdl"
 
   def project do
@@ -53,13 +53,13 @@ defmodule Membrane.Element.SDL.MixProject do
 
   defp deps do
     [
-      {:membrane_core, "~> 0.3.0"},
+      {:membrane_core, "~> 0.4.0", github: "membraneframework/membrane-core", override: true},
       {:membrane_common_c, "~> 0.2.0"},
       {:membrane_caps_video_raw, "~> 0.1.0"},
       {:bundlex, "~> 0.2.6"},
       {:shmex, "~> 0.2.0"},
-      {:ex_doc, "~> 0.19", only: :dev, runtime: false},
-      {:dialyxir, "~> 1.0.0-rc.4", only: [:dev], runtime: false}
+      {:ex_doc, "~> 0.21", only: :dev, runtime: false},
+      {:dialyxir, "~> 1.0.0-rc.6", only: [:dev], runtime: false}
     ]
   end
 end
