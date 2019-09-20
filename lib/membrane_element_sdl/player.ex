@@ -6,15 +6,29 @@ defmodule Membrane.Element.SDL.Player do
   alias Membrane.{Buffer, Time}
   alias Membrane.Caps.Video.Raw
   alias Bundlex.CNode
+
   require CNode
-  use Membrane.Element.Base.Sink
+
+  use Membrane.Sink
   use Bunch
+
+  @experimental_latency 20 |> Time.milliseconds()
+
+  def_options latency: [
+                type: :time,
+                default: @experimental_latency,
+                description: """
+                Time needed to show a frame on a screen.
+                May have to be adjusted for your system.
+                """
+              ]
 
   def_input_pad :input, caps: Raw, demand_unit: :buffers
 
   @impl true
-  def handle_init(_options) do
-    {:ok, %{cnode: nil, timer: nil, expected_tick: nil, tick_err: nil}}
+  def handle_init(options) do
+    state = %{cnode: nil, timer_started?: false}
+    {{:ok, latency: options.latency}, state}
   end
 
   @impl true
@@ -25,19 +39,27 @@ defmodule Membrane.Element.SDL.Player do
 
   @impl true
   def handle_caps(:input, caps, ctx, state) do
-    %{cnode: cnode, timer: timer} = state
     %{input: input} = ctx.pads
+    %{cnode: cnode} = state
 
-    withl caps: true <- input.caps != caps,
-          stop: :ok <- if(input.caps, do: cnode |> CNode.call(:destroy), else: :ok),
-          call: :ok <- cnode |> CNode.call({:create, caps.width, caps.height}) do
-      if timer, do: Process.cancel_timer(timer)
-      tick(caps, %{state | expected_tick: Time.monotonic_time(), tick_err: 0})
+    if !input.caps || caps == input.caps do
+      {cnode |> CNode.call({:create, caps.width, caps.height}), state}
     else
-      caps: false -> {:ok, state}
-      stop: :error -> {{:error, :destroy}, state}
-      call: :error -> {{:error, :create}, state}
+      raise "Caps have changed while playing. This is not supported."
     end
+  end
+
+  @impl true
+  def handle_start_of_stream(:input, %{pads: %{input: %{caps: nil}}}, _state) do
+    raise "No caps before start of stream"
+  end
+
+  def handle_start_of_stream(:input, ctx, state) do
+    use Ratio
+    {nom, denom} = ctx.pads.input.caps.framerate
+    timer = {:demand_timer, Time.seconds(denom) <|> nom}
+
+    {{:ok, demand: :input, start_timer: timer}, %{state | timer_started?: true}}
   end
 
   @impl true
@@ -46,25 +68,23 @@ defmodule Membrane.Element.SDL.Player do
       Shmex.ensure_not_gc(payload)
       {:ok, state}
     else
-      :error -> {{:error, :display_frame}, state}
+      :error -> raise "Error while displaying frame"
     end
   end
 
   @impl true
-  def handle_other(:tick, %{playback_state: :playing} = ctx, state) do
-    tick(ctx.pads.input.caps, state)
+  def handle_tick(:demand_timer, _ctx, state) do
+    {{:ok, demand: :input}, state}
   end
 
   @impl true
-  def handle_other(:tick, _ctx, state) do
-    {:ok, state}
+  def handle_playing_to_prepared(_ctx, %{timer_started?: true} = state) do
+    :ok = state.cnode |> CNode.call(:destroy)
+    {{:ok, stop_timer: :demand_timer}, %{state | timer_started?: false}}
   end
 
   @impl true
   def handle_playing_to_prepared(_ctx, state) do
-    Process.cancel_timer(state.timer)
-    state = %{state | timer: nil}
-    :ok = state.cnode |> CNode.call(:destroy)
     {:ok, state}
   end
 
@@ -72,13 +92,5 @@ defmodule Membrane.Element.SDL.Player do
   def handle_prepared_to_stopped(_ctx, state) do
     :ok = state.cnode |> CNode.stop()
     {:ok, %{state | cnode: nil}}
-  end
-
-  defp tick(caps, state) do
-    {nom, denom} = caps.framerate
-    {duration, err} = Bunch.Math.div_rem(1000 * denom, nom, state.tick_err)
-    next_tick = state.expected_tick + Time.milliseconds(duration)
-    timer = Process.send_after(self(), :tick, next_tick |> Time.to_milliseconds(), abs: true)
-    {{:ok, demand: :input}, %{state | tick_err: err, expected_tick: next_tick, timer: timer}}
   end
 end
