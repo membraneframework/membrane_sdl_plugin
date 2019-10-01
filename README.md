@@ -49,7 +49,7 @@ defmodule My.Pipeline do
       {:decoder, :output} => {:sdl, :input}
     }
 
-    {{:ok, %Spec{children: children, links: links}}, %{}}
+    {{:ok, spec: %Spec{children: children, links: links}}, %{}}
   end
 end
 ```
