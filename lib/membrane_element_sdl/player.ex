@@ -12,23 +12,15 @@ defmodule Membrane.Element.SDL.Player do
   use Membrane.Sink
   use Bunch
 
-  @experimental_latency 20 |> Time.milliseconds()
-
-  def_options latency: [
-                type: :time,
-                default: @experimental_latency,
-                description: """
-                Time needed to show a frame on a screen.
-                May have to be adjusted for your system.
-                """
-              ]
+  # Experimentally designated time needed to show a frame on a screeen
+  @latency 20 |> Time.milliseconds()
 
   def_input_pad :input, caps: Raw, demand_unit: :buffers
 
   @impl true
-  def handle_init(options) do
+  def handle_init(_options) do
     state = %{cnode: nil, timer_started?: false}
-    {{:ok, latency: options.latency}, state}
+    {{:ok, latency: @latency}, state}
   end
 
   @impl true
@@ -54,6 +46,7 @@ defmodule Membrane.Element.SDL.Player do
     raise "No caps before start of stream"
   end
 
+  @impl true
   def handle_start_of_stream(:input, ctx, state) do
     use Ratio
     {nom, denom} = ctx.pads.input.caps.framerate
