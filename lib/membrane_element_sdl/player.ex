@@ -12,7 +12,7 @@ defmodule Membrane.Element.SDL.Player do
   use Membrane.Sink
   use Bunch
 
-  # Experimentally designated time needed to show a frame on a screeen
+  # The measured latency needed to show a frame on a screen.
   @latency 20 |> Time.milliseconds()
 
   def_input_pad :input, caps: Raw, demand_unit: :buffers
