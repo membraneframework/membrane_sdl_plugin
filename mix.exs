@@ -53,7 +53,7 @@ defmodule Membrane.Element.SDL.MixProject do
 
   defp deps do
     [
-      {:membrane_core, "~> 0.4.0", github: "membraneframework/membrane-core", override: true},
+      {:membrane_core, "~> 0.4.1"},
       {:membrane_common_c, "~> 0.2.0"},
       {:membrane_caps_video_raw, "~> 0.1.0"},
       {:bundlex, "~> 0.2.6"},
