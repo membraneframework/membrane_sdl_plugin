@@ -29,7 +29,6 @@ The pipeline below displays a sample h264 video from the net (with use of [Hackn
 ```elixir
 defmodule My.Pipeline do
   alias Membrane.Element.{FFmpeg.H264, Hackney, SDL}
-  alias Membrane.Pipeline.Spec
   use Membrane.Pipeline
 
   @impl true
@@ -43,13 +42,14 @@ defmodule My.Pipeline do
       sdl: SDL.Player
     ]
 
-    links = %{
-      {:hackney, :output} => {:parser, :input},
-      {:parser, :output} => {:decoder, :input},
-      {:decoder, :output} => {:sdl, :input}
-    }
+    links = [
+      link(:hackney)
+      |> to(:parser)
+      |> to(:decoder)
+      |> to(:sdl)
+    ]
 
-    {{:ok, spec: %Spec{children: children, links: links}}, %{}}
+    {{:ok, spec: %ParentSpec{children: children, links: links}}, %{}}
   end
 end
 ```
