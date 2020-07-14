@@ -11,7 +11,6 @@
 #include "player.h"
 #include <ei.h>
 #include <ei_connect.h>
-#include <erl_interface.h>
 
 #ifdef CNODE_DEBUG
 #define DEBUG(X, ...) fprintf(stderr, X "\r\n", ##__VA_ARGS__)
