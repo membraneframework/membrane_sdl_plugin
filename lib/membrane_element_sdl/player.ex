@@ -3,14 +3,14 @@ defmodule Membrane.Element.SDL.Player do
   This module provides an [SDL](https://www.libsdl.org/)-based video player sink.
   """
 
+  use Bunch
+  use Membrane.Sink
+
   alias Membrane.{Buffer, Time}
   alias Membrane.Caps.Video.Raw
-  alias Bundlex.CNode
+  alias Unifex.CNode
 
-  require CNode
-
-  use Membrane.Sink
-  use Bunch
+  require Unifex.CNode
 
   # The measured latency needed to show a frame on a screen.
   @latency 20 |> Time.milliseconds()
@@ -35,7 +35,8 @@ defmodule Membrane.Element.SDL.Player do
     %{cnode: cnode} = state
 
     if !input.caps || caps == input.caps do
-      {cnode |> CNode.call({:create, caps.width, caps.height}), state}
+      :ok = CNode.call(cnode, :create, [caps.width, caps.height])
+      {:ok, state}
     else
       raise "Caps have changed while playing. This is not supported."
     end
@@ -57,12 +58,9 @@ defmodule Membrane.Element.SDL.Player do
 
   @impl true
   def handle_write(:input, %Buffer{payload: payload}, _ctx, state) do
-    with :ok <- state.cnode |> CNode.call({:display_frame, payload}) do
-      Shmex.ensure_not_gc(payload)
-      {:ok, state}
-    else
-      :error -> raise "Error while displaying frame"
-    end
+    payload = Membrane.Payload.to_binary(payload)
+    :ok = CNode.call(state.cnode, :display_frame, [payload])
+    {:ok, state}
   end
 
   @impl true
@@ -72,7 +70,6 @@ defmodule Membrane.Element.SDL.Player do
 
   @impl true
   def handle_playing_to_prepared(_ctx, %{timer_started?: true} = state) do
-    :ok = state.cnode |> CNode.call(:destroy)
     {{:ok, stop_timer: :demand_timer}, %{state | timer_started?: false}}
   end
 
