@@ -1,4 +1,4 @@
-defmodule Membrane.Element.SDL.Player do
+defmodule Membrane.SDL.Player do
   @moduledoc """
   This module provides an [SDL](https://www.libsdl.org/)-based video player sink.
   """

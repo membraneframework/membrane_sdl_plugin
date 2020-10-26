@@ -1,8 +1,8 @@
-# Membrane Multimedia Framework: SDL element
+# Membrane SDL plugin
 
-[![Hex.pm](https://img.shields.io/hexpm/v/membrane_element_sdl.svg)](https://hex.pm/packages/membrane_element_sdl)
-[![API Docs](https://img.shields.io/badge/api-docs-yellow.svg?style=flat)](https://hexdocs.pm/membrane_element_sdl/)
-[![CircleCI](https://circleci.com/gh/membraneframework/membrane-element-sdl.svg?style=svg)](https://circleci.com/gh/membraneframework/membrane-element-sdl)
+[![Hex.pm](https://img.shields.io/hexpm/v/membrane_sdl_plugin.svg)](https://hex.pm/packages/membrane_sdl_plugin)
+[![API Docs](https://img.shields.io/badge/api-docs-yellow.svg?style=flat)](https://hexdocs.pm/membrane_sdl_plugin/)
+[![CircleCI](https://circleci.com/gh/membraneframework/membrane_sdl_plugin.svg?style=svg)](https://circleci.com/gh/membraneframework/membrane_sdl_plugin)
 
 This package provides an [SDL](https://www.libsdl.org/)-based video player.
 
@@ -10,17 +10,17 @@ It is part of [Membrane Multimedia Framework](https://membraneframework.org).
 
 ## Installation
 
-The package can be installed by adding `membrane_element_sdl` to your list of dependencies in `mix.exs`:
+The package can be installed by adding `membrane_sdl_plugin` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
   [
-    {:membrane_element_sdl, "~> 0.3.0"}
+    {:membrane_sdl_plugin, "~> 0.3.0"}
   ]
 end
 ```
 
-The docs can be found at [HexDocs](https://hexdocs.pm/membrane_element_sdl).
+The docs can be found at [HexDocs](https://hexdocs.pm/membrane_sdl_plugin).
 
 ## Usage
 
@@ -28,8 +28,10 @@ The pipeline below displays a sample h264 video from the net (with use of [Hackn
 
 ```elixir
 defmodule My.Pipeline do
-  alias Membrane.Element.{FFmpeg.H264, Hackney, SDL}
   use Membrane.Pipeline
+
+  alias Membrane.Element.{FFmpeg.H264, Hackney}
+  alias Membrane.SDL
 
   @impl true
   def handle_init(_) do
