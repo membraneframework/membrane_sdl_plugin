@@ -1,10 +1,11 @@
-defmodule Membrane.Element.SDL.PlayerTest do
+defmodule Membrane.SDL.PlayerTest do
   use ExUnit.Case
 
   import Membrane.Testing.Assertions
 
-  alias Membrane.Element.{FFmpeg.H264, Hackney, SDL}
+  alias Membrane.Element.{FFmpeg.H264, Hackney}
   alias Membrane.Testing
+  alias Membrane.SDL
 
   @tag :manual
   test "integration test" do
