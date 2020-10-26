@@ -15,7 +15,7 @@ The package can be installed by adding `membrane_sdl_plugin` to your list of dep
 ```elixir
 def deps do
   [
-    {:membrane_sdl_plugin, "~> 0.3.0"}
+    {:membrane_sdl_plugin, "~> 0.4.0"}
   ]
 end
 ```
