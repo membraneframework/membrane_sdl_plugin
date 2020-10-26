@@ -54,10 +54,11 @@ defmodule Membrane.Element.SDL.MixProject do
   defp deps do
     [
       {:membrane_core, "~> 0.5.0"},
-      {:membrane_common_c, "~> 0.3.0"},
+      {:membrane_common_c, "~> 0.4.0"},
       {:membrane_caps_video_raw, "~> 0.1.0"},
-      {:bundlex, "~> 0.2.6"},
-      {:shmex, "~> 0.2.0"},
+      {:unifex, "~> 0.3.2"},
+      {:membrane_element_ffmpeg_h264, ">= 0.0.0", only: :test},
+      {:membrane_element_hackney, ">= 0.0.0", only: :test},
       {:ex_doc, "~> 0.21", only: :dev, runtime: false},
       {:dialyxir, "~> 1.0.0", only: [:dev], runtime: false}
     ]

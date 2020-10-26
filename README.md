@@ -54,6 +54,10 @@ defmodule My.Pipeline do
 end
 ```
 
+## Testing
+
+To run manual tests, type `mix test --include manual`
+
 ## Copyright and License
 
 Copyright 2019, [Software Mansion](https://swmansion.com/?utm_source=git&utm_medium=readme&utm_campaign=membrane)

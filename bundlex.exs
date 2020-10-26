@@ -3,16 +3,17 @@ defmodule Membrane.Element.SDL.BundlexProject do
 
   def project do
     [
-      cnodes: cnodes(Bundlex.platform())
+      natives: natives()
     ]
   end
 
-  defp cnodes(_platform) do
+  defp natives() do
     [
       player: [
-        sources: ["player.c", "cnodeserver.c"],
-        deps: [shmex: :lib_cnode, bunch_native: :bunch],
-        pkg_configs: ["sdl2"]
+        interface: :cnode,
+        sources: ["player.c"],
+        pkg_configs: ["sdl2"],
+        preprocessor: Unifex
       ]
     ]
   end
