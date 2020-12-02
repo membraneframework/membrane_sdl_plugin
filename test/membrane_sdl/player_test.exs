@@ -3,9 +3,7 @@ defmodule Membrane.SDL.PlayerTest do
 
   import Membrane.Testing.Assertions
 
-  alias Membrane.Element.{FFmpeg.H264, Hackney}
-  alias Membrane.Testing
-  alias Membrane.SDL
+  alias Membrane.{H264, Hackney, SDL, Testing}
 
   @tag :manual
   test "integration test" do
@@ -14,8 +12,8 @@ defmodule Membrane.SDL.PlayerTest do
         hackney: %Hackney.Source{
           location: "https://membraneframework.github.io/static/video-samples/test-video.h264"
         },
-        parser: %H264.Parser{framerate: {30, 1}},
-        decoder: H264.Decoder,
+        parser: %H264.FFmpeg.Parser{framerate: {30, 1}},
+        decoder: H264.FFmpeg.Decoder,
         sdl: SDL.Player
       ]
     }
