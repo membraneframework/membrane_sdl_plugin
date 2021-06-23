@@ -1,7 +1,7 @@
 defmodule Membrane.SDL.Plugin.MixProject do
   use Mix.Project
 
-  @version "0.6.0"
+  @version "0.7.0"
   @github_url "https://github.com/membraneframework/membrane_sdl_plugin"
 
   def project do
@@ -53,13 +53,13 @@ defmodule Membrane.SDL.Plugin.MixProject do
 
   defp deps do
     [
-      {:membrane_core, "~> 0.6.0"},
-      {:membrane_common_c, "~> 0.6.0"},
+      {:membrane_core, "~> 0.7.0"},
+      {:membrane_common_c, "~> 0.7.0"},
       {:membrane_caps_video_raw, "~> 0.1.0"},
       {:unifex, "~> 0.4.0"},
-      {:membrane_h264_ffmpeg_plugin, "~> 0.8.0", only: :test},
-      {:membrane_hackney_plugin, "~> 0.4.0", only: :test},
-      {:ex_doc, "~> 0.21", only: :dev, runtime: false},
+      {:membrane_h264_ffmpeg_plugin, "~> 0.9.0", only: :test},
+      {:membrane_hackney_plugin, "~> 0.5.0", only: :test},
+      {:ex_doc, "~> 0.24", only: :dev, runtime: false},
       {:dialyxir, "~> 1.0.0", only: [:dev], runtime: false}
     ]
   end
