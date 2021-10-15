@@ -1,14 +1,14 @@
 defmodule Membrane.SDL.Plugin.MixProject do
   use Mix.Project
 
-  @version "0.8.0"
+  @version "0.9.0"
   @github_url "https://github.com/membraneframework/membrane_sdl_plugin"
 
   def project do
     [
       app: :membrane_sdl_plugin,
       version: @version,
-      elixir: "~> 1.7",
+      elixir: "~> 1.12",
       compilers: [:unifex, :bundlex] ++ Mix.compilers(),
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
@@ -34,7 +34,7 @@ defmodule Membrane.SDL.Plugin.MixProject do
   defp docs do
     [
       main: "readme",
-      extras: ["README.md"],
+      extras: ["README.md", LICENSE: [title: "License"]],
       source_ref: "v#{@version}"
     ]
   end
@@ -54,13 +54,16 @@ defmodule Membrane.SDL.Plugin.MixProject do
   defp deps do
     [
       {:membrane_core, "~> 0.7.0"},
-      {:membrane_common_c, "~> 0.8.0"},
+      {:membrane_common_c, "~> 0.9.0"},
       {:membrane_caps_video_raw, "~> 0.1.0"},
-      {:unifex, "~> 0.6.0"},
-      {:membrane_h264_ffmpeg_plugin, "~> 0.11.0", only: :test},
+      {:unifex, "~> 0.7.0"},
+      # Testing
+      {:membrane_h264_ffmpeg_plugin, "~> 0.12.0", only: :test},
       {:membrane_hackney_plugin, "~> 0.5.0", only: :test},
+      # Development
       {:ex_doc, "~> 0.24", only: :dev, runtime: false},
-      {:dialyxir, "~> 1.0.0", only: [:dev], runtime: false}
+      {:dialyxir, "~> 1.1", only: :dev, runtime: false},
+      {:credo, "~> 1.5", only: :dev, runtime: false}
     ]
   end
 end
