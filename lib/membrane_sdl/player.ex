@@ -6,16 +6,16 @@ defmodule Membrane.SDL.Player do
   use Bunch
   use Membrane.Sink
 
-  alias Membrane.{Buffer, Time}
-  alias Membrane.Caps.Video.Raw
-  alias Unifex.CNode
-
   require Unifex.CNode
+
+  alias Membrane.{Buffer, Time}
+  alias Membrane.RawVideo
+  alias Unifex.CNode
 
   # The measured latency needed to show a frame on a screen.
   @latency 20 |> Time.milliseconds()
 
-  def_input_pad :input, caps: Raw, demand_unit: :buffers
+  def_input_pad :input, caps: RawVideo, demand_unit: :buffers
 
   @impl true
   def handle_init(_options) do

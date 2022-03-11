@@ -1,7 +1,7 @@
 defmodule Membrane.SDL.Plugin.MixProject do
   use Mix.Project
 
-  @version "0.11.0"
+  @version "0.12.0"
   @github_url "https://github.com/membraneframework/membrane_sdl_plugin"
 
   def project do
@@ -35,6 +35,7 @@ defmodule Membrane.SDL.Plugin.MixProject do
     [
       main: "readme",
       extras: ["README.md", LICENSE: [title: "License"]],
+      formatters: ["html"],
       source_ref: "v#{@version}"
     ]
   end
@@ -42,7 +43,7 @@ defmodule Membrane.SDL.Plugin.MixProject do
   defp package do
     [
       maintainers: ["Membrane Team"],
-      licenses: ["Apache 2.0"],
+      licenses: ["Apache-2.0"],
       links: %{
         "GitHub" => @github_url,
         "Membrane Framework Homepage" => "https://membraneframework.org"
@@ -53,17 +54,17 @@ defmodule Membrane.SDL.Plugin.MixProject do
 
   defp deps do
     [
-      {:membrane_core, "~> 0.8.0"},
-      {:membrane_common_c, "~> 0.10.0"},
-      {:membrane_caps_video_raw, "~> 0.1.0"},
+      {:membrane_core, "~> 0.9.0"},
+      {:membrane_common_c, "~> 0.11.0"},
+      {:membrane_raw_video_format, "~> 0.2.0"},
       {:unifex, "~> 0.7.0"},
       # Testing
-      {:membrane_h264_ffmpeg_plugin, "~> 0.15.0", only: :test},
-      {:membrane_hackney_plugin, "~> 0.6.0", only: :test},
+      {:membrane_h264_ffmpeg_plugin, "~> 0.17", only: :test},
+      {:membrane_hackney_plugin, "~> 0.7", only: :test},
       # Development
-      {:ex_doc, "~> 0.24", only: :dev, runtime: false},
+      {:ex_doc, "~> 0.28", only: :dev, runtime: false},
       {:dialyxir, "~> 1.1", only: :dev, runtime: false},
-      {:credo, "~> 1.5", only: :dev, runtime: false}
+      {:credo, "~> 1.6", only: :dev, runtime: false}
     ]
   end
 end
