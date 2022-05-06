@@ -19,8 +19,7 @@ defmodule Membrane.SDL.PlayerTest do
     }
 
     {:ok, pid} = Testing.Pipeline.start_link(options)
-    Testing.Pipeline.play(pid)
     assert_end_of_stream(pid, :sdl, :input, 15_000)
-    Testing.Pipeline.stop_and_terminate(pid, blocking?: true)
+    Testing.Pipeline.terminate(pid, blocking?: true)
   end
 end
