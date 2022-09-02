@@ -24,23 +24,23 @@ The docs can be found at [HexDocs](https://hexdocs.pm/membrane_sdl_plugin).
 
 ## Usage
 
-The pipeline below displays a sample h264 video from the net (with use of [Hackney](https://github.com/membraneframework/membrane-element-hackney) and [H264](https://github.com/membraneframework/membrane-element-ffmpeg-h264) elements):
+The pipeline below displays a sample h264 video from the net (with use of [Hackney](https://github.com/membraneframework/membrane_hackney_plugin) and [H264](https://github.com/membraneframework/membrane_h264_ffmpeg_plugin) elements):
 
 ```elixir
-defmodule My.Pipeline do
+defmodule MyPipeline do
   use Membrane.Pipeline
 
-  alias Membrane.Element.{FFmpeg.H264, Hackney}
   alias Membrane.SDL
 
   @impl true
-  def handle_init(_) do
+  def handle_init(_opts) do
     children = [
-      hackney: %Hackney.Source{
-        location: "https://membraneframework.github.io/static/video-samples/test-video.h264"
+      hackney: %Membrane.Hackney.Source{
+        location: "http://raw.githubusercontent.com/membraneframework/static/gh-pages/samples/big-buck-bunny/bun33s_720x480.h264",
+        hackney_opts: [follow_redirect: true]
       },
-      parser: %H264.Parser{framerate: {30, 1}},
-      decoder: H264.Decoder,
+      parser: %Membrane.H264.FFmpeg.Parser{framerate: {30, 1}},
+      decoder: Membrane.H264.FFmpeg.Decoder,
       sdl: SDL.Player
     ]
 
@@ -51,7 +51,7 @@ defmodule My.Pipeline do
       |> to(:sdl)
     ]
 
-    {{:ok, spec: %ParentSpec{children: children, links: links}}, %{}}
+    {{:ok, spec: %ParentSpec{children: children, links: links}, playback: :playing}, %{}}
   end
 end
 ```
