@@ -10,7 +10,8 @@ defmodule Membrane.SDL.PlayerTest do
     options = %Testing.Pipeline.Options{
       elements: [
         hackney: %Hackney.Source{
-          location: "https://membraneframework.github.io/static/video-samples/test-video.h264"
+          location:
+            "https://raw.githubusercontent.com/membraneframework/static/gh-pages/samples/ffmpeg-testsrc.h264"
         },
         parser: %H264.FFmpeg.Parser{framerate: {30, 1}},
         decoder: H264.FFmpeg.Decoder,
