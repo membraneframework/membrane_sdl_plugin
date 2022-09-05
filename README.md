@@ -24,36 +24,13 @@ The docs can be found at [HexDocs](https://hexdocs.pm/membrane_sdl_plugin).
 
 ## Usage
 
-The pipeline below displays a sample h264 video from the net (with use of [Hackney](https://github.com/membraneframework/membrane-element-hackney) and [H264](https://github.com/membraneframework/membrane-element-ffmpeg-h264) elements):
+Usage example can be found in [`examples/player.exs`](examples/player.exs). 
+This example demonstrates how to play a H264 video, downloaded in real-time from Membrane's static repository over HTTP.
 
-```elixir
-defmodule My.Pipeline do
-  use Membrane.Pipeline
+To run it, simply execute the following command in your terminal:
 
-  alias Membrane.Element.{FFmpeg.H264, Hackney}
-  alias Membrane.SDL
-
-  @impl true
-  def handle_init(_) do
-    children = [
-      hackney: %Hackney.Source{
-        location: "https://membraneframework.github.io/static/video-samples/test-video.h264"
-      },
-      parser: %H264.Parser{framerate: {30, 1}},
-      decoder: H264.Decoder,
-      sdl: SDL.Player
-    ]
-
-    links = [
-      link(:hackney)
-      |> to(:parser)
-      |> to(:decoder)
-      |> to(:sdl)
-    ]
-
-    {{:ok, spec: %ParentSpec{children: children, links: links}}, %{}}
-  end
-end
+```bash
+$ elixir examples/player.exs
 ```
 
 ## Testing
