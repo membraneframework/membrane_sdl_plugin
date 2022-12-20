@@ -6,6 +6,7 @@ defmodule Membrane.SDL.Player do
   use Bunch
   use Membrane.Sink
 
+  require Membrane.Logger
   require Unifex.CNode
 
   alias Membrane.{Buffer, Time}
@@ -24,13 +25,14 @@ defmodule Membrane.SDL.Player do
   end
 
   @impl true
-  def handle_setup(ctx, state) do
+  def handle_setup(_ctx, state) do
     {:ok, cnode} = CNode.start_link(:player)
 
-    Membrane.ResourceGuard.register(
-      ctx.resource_guard,
-      fn -> CNode.stop(cnode) end
-    )
+    # TODO CNODE is dead after the pipeline is stopped, investigate why
+    # Membrane.ResourceGuard.register(
+    #   ctx.resource_guard,
+    #   fn -> CNode.stop(cnode) end
+    # )
 
     {[], %{state | cnode: cnode}}
   end
