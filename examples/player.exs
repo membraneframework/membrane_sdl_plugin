@@ -14,13 +14,17 @@ defmodule Example do
 
   @impl true
   def handle_init(_opts) do
-    spec = child(:source , %Membrane.Hackney.Source{location: @media_url, hackney_opts: [follow_redirect: true]}) |>
-    child(:parser, %Membrane.H264.FFmpeg.Parser{framerate: {25, 1}}) |>
-    child(:decoder, Membrane.H264.FFmpeg.Decoder) |>
-    child(:player, Membrane.SDL.Player)
+    structure =
+      child(:source , %Membrane.Hackney.Source{
+        location: @media_url,
+        hackney_opts: [follow_redirect: true]
+      })
+      |> child(:parser, %Membrane.H264.FFmpeg.Parser{framerate: {25, 1}})
+      |> child(:decoder, Membrane.H264.FFmpeg.Decoder)
+      |> child(:player, Membrane.SDL.Player)
 
     # Initialize the spec and start the playback
-    {[spec: spec, playback: :playing], %{}}
+    {[spec: structure, playback: :playing], %{}}
   end
 
   # `handle_element_end_of_stream/3` clauses handle automatic termination of the pipeline after playback is finished
