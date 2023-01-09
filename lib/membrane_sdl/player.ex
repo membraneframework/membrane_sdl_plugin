@@ -28,12 +28,6 @@ defmodule Membrane.SDL.Player do
   def handle_setup(_ctx, state) do
     {:ok, cnode} = CNode.start_link(:player)
 
-    # TODO CNODE is dead after the pipeline is stopped, investigate why
-    # Membrane.ResourceGuard.register(
-    #   ctx.resource_guard,
-    #   fn -> CNode.stop(cnode) end
-    # )
-
     {[], %{state | cnode: cnode}}
   end
 
