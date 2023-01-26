@@ -34,12 +34,13 @@ defmodule Membrane.SDL.Player do
     %{input: input} = ctx.pads
     %{cnode: cnode} = state
 
-    if !input.caps || caps == input.caps do
-      :ok = CNode.call(cnode, :create, [caps.width, caps.height])
-      {:ok, state}
-    else
-      raise "Caps have changed while playing. This is not supported."
+    cond do
+      !input.caps -> :ok = CNode.call(cnode, :create, [caps.width, caps.height])
+      caps == input.caps -> :ok
+      true -> raise "Caps have changed while playing. This is not supported."
     end
+
+    {:ok, state}
   end
 
   @impl true
