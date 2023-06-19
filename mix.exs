@@ -61,7 +61,7 @@ defmodule Membrane.SDL.Plugin.MixProject do
       {:unifex, "~> 1.0"},
       # Testing
       {:membrane_h264_ffmpeg_plugin, "~> 0.27.0", only: :test},
-      {:membrane_hackney_plugin, "~> 0.10.0"", only: :test},
+      {:membrane_hackney_plugin, "~> 0.10.0", only: :test},
       # Development
       {:ex_doc, "~> 0.28", only: :dev, runtime: false},
       {:dialyxir, "~> 1.1", only: :dev, runtime: false},
