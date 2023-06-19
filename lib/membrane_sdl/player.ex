@@ -48,7 +48,7 @@ defmodule Membrane.SDL.Player do
   def handle_start_of_stream(:input, ctx, state) do
     use Ratio
     {nom, denom} = ctx.pads.input.stream_format.framerate
-    timer = {:demand_timer, Time.seconds(denom) <|> nom}
+    timer = {:demand_timer, Ratio.new(Time.seconds(denom), nom)}
 
     {[demand: :input, start_timer: timer], %{state | timer_started?: true}}
   end
