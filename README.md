@@ -10,6 +10,20 @@ It is part of [Membrane Multimedia Framework](https://membraneframework.org).
 
 ## Installation
 
+First, you need to install FFmpeg on your system:
+
+### macOS
+
+```shell
+brew install ffmpeg
+```
+
+### Ubuntu
+
+```shell
+sudo apt-get install ffmpeg
+```
+
 The package can be installed by adding `membrane_sdl_plugin` to your list of dependencies in `mix.exs`:
 
 ```elixir
@@ -24,7 +38,7 @@ The docs can be found at [HexDocs](https://hexdocs.pm/membrane_sdl_plugin).
 
 ## Usage
 
-Usage example can be found in [`examples/player.exs`](examples/player.exs). 
+Usage example can be found in [`examples/player.exs`](examples/player.exs).
 This example demonstrates how to play a H264 video, downloaded in real-time from Membrane's static repository over HTTP.
 
 To run it, simply execute the following command in your terminal:
