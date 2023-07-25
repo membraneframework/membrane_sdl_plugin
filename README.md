@@ -10,20 +10,6 @@ It is part of [Membrane Multimedia Framework](https://membraneframework.org).
 
 ## Installation
 
-First, you need to install FFmpeg on your system:
-
-### macOS
-
-```shell
-brew install ffmpeg
-```
-
-### Ubuntu
-
-```shell
-sudo apt-get install ffmpeg
-```
-
 The package can be installed by adding `membrane_sdl_plugin` to your list of dependencies in `mix.exs`:
 
 ```elixir
@@ -35,6 +21,20 @@ end
 ```
 
 The docs can be found at [HexDocs](https://hexdocs.pm/membrane_sdl_plugin).
+
+> In the case of development mode, you need to install FFmpeg on your system:
+>
+> ### macOS
+>
+> ```shell
+> brew install ffmpeg
+> ```
+>
+> ### Ubuntu
+>
+> ```shell
+> sudo apt-get install ffmpeg
+> ```
 
 ## Usage
 
