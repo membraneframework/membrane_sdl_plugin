@@ -10,6 +10,8 @@ It is part of [Membrane Multimedia Framework](https://membraneframework.org).
 
 ## Installation
 
+First, you need to install [SDL2](https://www.libsdl.org) on your system.
+
 The package can be installed by adding `membrane_sdl_plugin` to your list of dependencies in `mix.exs`:
 
 ```elixir
