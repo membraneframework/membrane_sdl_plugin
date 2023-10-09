@@ -8,35 +8,39 @@ This package provides an [SDL](https://www.libsdl.org/)-based video player.
 
 It is part of [Membrane Multimedia Framework](https://membraneframework.org).
 
+Documentation is available at [HexDocs](https://hexdocs.pm/membrane_sdl_plugin).
+
 ## Installation
 
-First, you need to install [SDL2](https://www.libsdl.org) on your system.
-
-The package can be installed by adding `membrane_sdl_plugin` to your list of dependencies in `mix.exs`:
+Add the following line to your `deps` in `mix.exs`. Run `mix deps.get`.
 
 ```elixir
 def deps do
   [
-    {:membrane_sdl_plugin, "~> 0.16.0"}
+    {:membrane_sdl_plugin, "~> 0.17.0"}
   ]
 end
 ```
+This package depends on the [SDL2](https://www.libsdl.org) library. The precompiled build will be pulled and linked automatically. However, should there be any problems, consider installing it manually. In the case of development mode, you need to install FFmpeg on your system.
 
-The docs can be found at [HexDocs](https://hexdocs.pm/membrane_sdl_plugin).
+### Manual instalation of dependencies
+#### Ubuntu
 
-> In the case of development mode, you need to install FFmpeg on your system:
->
-> ### macOS
->
-> ```shell
-> brew install ffmpeg
-> ```
->
-> ### Ubuntu
->
-> ```shell
-> sudo apt-get install ffmpeg
-> ```
+```bash
+sudo apt-get install sdl2
+```
+
+#### Arch/Manjaro
+
+```bash
+pacman -S sdl2
+```
+
+#### MacOS
+
+```bash
+brew install sdl2
+```
 
 ## Usage
 
