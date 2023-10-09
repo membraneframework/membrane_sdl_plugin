@@ -15,7 +15,7 @@ defmodule Membrane.SDL.PlayerTest do
             "https://raw.githubusercontent.com/membraneframework/static/gh-pages/samples/ffmpeg-testsrc.h264",
           hackney_opts: [follow_redirect: true]
         })
-        |> child(:parser, %H264.FFmpeg.Parser{framerate: {30, 1}})
+        |> child(:parser, %H264.Parser{generate_best_effort_timestamps: %{framerate: {30, 1}}})
         |> child(:decoder, H264.FFmpeg.Decoder)
         |> child(:sdl, SDL.Player)
     ]
