@@ -58,8 +58,7 @@ defmodule Membrane.SDL.Plugin.MixProject do
       {:membrane_core, "~> 0.12.9"},
       {:membrane_common_c, "~> 0.15.0"},
       {:membrane_raw_video_format, "~> 0.3.0"},
-      {:unifex, "~> 1.1.0"},
-      {:bundlex, "~> 1.2.0"},
+      {:bundlex, "~> 1.2"},
       # Testing
       {:membrane_h264_ffmpeg_plugin, "~> 0.29.0", only: :test},
       {:membrane_h264_plugin, "~> 0.7.0", only: :test},
