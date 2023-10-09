@@ -32,7 +32,7 @@ defmodule Membrane.SDL.BundlexProject do
         interface: :cnode,
         sources: ["player.c"],
         os_deps: [
-          {[get_sdl2_url(), :pkg_config], "sdl2"}
+          {[get_sdl2_url(), :pkg_config], "SDL2"}
         ],
         preprocessor: Unifex
       ]

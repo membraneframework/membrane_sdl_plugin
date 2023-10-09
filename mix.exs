@@ -55,7 +55,7 @@ defmodule Membrane.SDL.Plugin.MixProject do
 
   defp deps do
     [
-      {:membrane_core, "~> 0.12.0"},
+      {:membrane_core, "~> 0.12.9"},
       {:membrane_common_c, "~> 0.15.0"},
       {:membrane_raw_video_format, "~> 0.3.0"},
       {:unifex, "~> 1.1.0"},
