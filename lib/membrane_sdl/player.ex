@@ -16,7 +16,7 @@ defmodule Membrane.SDL.Player do
   # The measured latency needed to show a frame on a screen.
   @latency 20 |> Time.milliseconds()
 
-  def_input_pad :input, accepted_format: RawVideo, demand_unit: :buffers
+  def_input_pad :input, accepted_format: RawVideo, flow_control: :manual, demand_unit: :buffers
 
   @impl true
   def handle_init(_options, _ctx) do
@@ -46,7 +46,7 @@ defmodule Membrane.SDL.Player do
 
   @impl true
   def handle_start_of_stream(:input, ctx, state) do
-    use Ratio
+    use Numbers, overload_operators: true
     {nom, denom} = ctx.pads.input.stream_format.framerate
     timer = {:demand_timer, Ratio.new(Time.seconds(denom), nom)}
 
@@ -54,7 +54,7 @@ defmodule Membrane.SDL.Player do
   end
 
   @impl true
-  def handle_write(:input, %Buffer{payload: payload}, _ctx, state) do
+  def handle_buffer(:input, %Buffer{payload: payload}, _ctx, state) do
     payload = Membrane.Payload.to_binary(payload)
     :ok = CNode.call(state.cnode, :display_frame, [payload])
     {[], state}

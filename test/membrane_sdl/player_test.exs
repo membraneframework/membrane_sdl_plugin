@@ -9,7 +9,7 @@ defmodule Membrane.SDL.PlayerTest do
   @tag :manual
   test "integration test" do
     options = [
-      structure:
+      spec:
         child(:hackney, %Hackney.Source{
           location:
             "https://raw.githubusercontent.com/membraneframework/static/gh-pages/samples/ffmpeg-testsrc.h264",
