@@ -1,7 +1,7 @@
 defmodule Membrane.SDL.Plugin.MixProject do
   use Mix.Project
 
-  @version "0.18.0"
+  @version "0.18.1"
   @github_url "https://github.com/membraneframework/membrane_sdl_plugin"
 
   def project do
@@ -59,6 +59,7 @@ defmodule Membrane.SDL.Plugin.MixProject do
       {:membrane_common_c, "~> 0.16.0"},
       {:membrane_raw_video_format, "~> 0.3.0"},
       {:bundlex, "~> 1.2"},
+      {:membrane_precompiled_dependency_provider, "~> 0.1.0"},
       # Testing
       {:membrane_h264_ffmpeg_plugin, "~> 0.31.0", only: :test},
       {:membrane_h264_plugin, "~> 0.9.0", only: :test},
