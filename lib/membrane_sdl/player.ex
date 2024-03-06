@@ -32,7 +32,9 @@ defmodule Membrane.SDL.Player do
 
   @impl true
   def handle_stream_format(:input, stream_format, ctx, %{cnode: cnode} = state) do
-    if !ctx.pads.input.stream_format || stream_format == ctx.pads.input.stream_format do
+    %{input: input} = ctx.pads
+
+    if !input.stream_format || stream_format == input.stream_format do
       :ok = CNode.call(cnode, :create, [stream_format.width, stream_format.height])
       {[], state}
     else
@@ -52,11 +54,11 @@ defmodule Membrane.SDL.Player do
     actions =
       case state do
         %{last_pts: nil, last_payload: nil} ->
+          :ok = CNode.call(state.cnode, :display_frame, [payload])
+
           [demand: :input]
 
-        %{last_pts: last_pts, last_payload: last_payload} ->
-          :ok = CNode.call(state.cnode, :display_frame, [last_payload])
-
+        %{last_pts: last_pts} ->
           [timer_interval: {:demand_timer, pts - last_pts}]
       end
 
