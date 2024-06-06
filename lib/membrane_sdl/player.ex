@@ -17,7 +17,7 @@ defmodule Membrane.SDL.Player do
   @latency 20 |> Time.milliseconds()
 
   def_input_pad :input,
-    accepted_format: %RawVideo{pixel_format: format} when format != :RGB,
+    accepted_format: %RawVideo{pixel_format: :I420},
     flow_control: :manual,
     demand_unit: :buffers
 
