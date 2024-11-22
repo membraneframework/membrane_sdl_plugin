@@ -16,7 +16,8 @@ defmodule Membrane.SDL.BundlexProject do
           sdl2: [
             {:precompiled, Membrane.PrecompiledDependencyProvider.get_dependency_url(:sdl2),
              "SDL2"},
-            {:pkg_config, "SDL2"}
+            {:pkg_config, "SDL2"},
+            {:pkg_config, "sdl2"}
           ]
         ],
         preprocessor: Unifex
