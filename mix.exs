@@ -1,7 +1,7 @@
 defmodule Membrane.SDL.Plugin.MixProject do
   use Mix.Project
 
-  @version "0.18.4"
+  @version "0.18.5"
   @github_url "https://github.com/membraneframework/membrane_sdl_plugin"
 
   def project do

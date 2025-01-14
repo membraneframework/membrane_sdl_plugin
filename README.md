@@ -17,7 +17,7 @@ Add the following line to your `deps` in `mix.exs`. Run `mix deps.get`.
 ```elixir
 def deps do
   [
-    {:membrane_sdl_plugin, "~> 0.18.4"}
+    {:membrane_sdl_plugin, "~> 0.18.5"}
   ]
 end
 ```
