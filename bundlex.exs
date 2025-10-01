@@ -14,7 +14,8 @@ defmodule Membrane.SDL.BundlexProject do
         sources: ["player.c"],
         os_deps: [
           sdl2: [
-            {:precompiled, Membrane.PrecompiledDependencyProvider.get_dependency_url(:sdl2),
+            {:precompiled,
+             Membrane.PrecompiledDependencyProvider.get_dependency_url(:sdl2, version: "2.32.10"),
              "SDL2"},
             {:pkg_config, "SDL2"},
             {:pkg_config, "sdl2"}
