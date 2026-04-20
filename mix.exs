@@ -1,7 +1,7 @@
 defmodule Membrane.SDL.Plugin.MixProject do
   use Mix.Project
 
-  @version "0.18.6"
+  @version "0.18.7"
   @github_url "https://github.com/membraneframework/membrane_sdl_plugin"
 
   def project do
@@ -12,14 +12,15 @@ defmodule Membrane.SDL.Plugin.MixProject do
       compilers: [:unifex, :bundlex] ++ Mix.compilers(),
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
-      description: "Membrane video player based on SDL",
+      description: "SDL2 video player sink for local desktop playback.",
       package: package(),
       name: "Membrane SDL plugin",
       source_url: @github_url,
       docs: docs(),
       homepage_url: "https://membraneframework.org",
       deps: deps(),
-      dialyzer: dialyzer()
+      dialyzer: dialyzer(),
+      aliases: [docs: ["docs", &prepend_llms_links/1]]
     ]
   end
 
@@ -36,7 +37,6 @@ defmodule Membrane.SDL.Plugin.MixProject do
     [
       main: "readme",
       extras: ["README.md", LICENSE: [title: "License"]],
-      formatters: ["html"],
       source_ref: "v#{@version}"
     ]
   end
@@ -65,7 +65,7 @@ defmodule Membrane.SDL.Plugin.MixProject do
       {:membrane_h26x_plugin, "~> 0.10.0", only: :test},
       {:membrane_hackney_plugin, "~> 0.11.0", only: :test},
       # Development
-      {:ex_doc, "~> 0.28", only: :dev, runtime: false},
+      {:ex_doc, "~> 0.40", only: :dev, runtime: false},
       {:dialyxir, "~> 1.1", only: :dev, runtime: false},
       {:credo, "~> 1.6", only: :dev, runtime: false}
     ]
@@ -81,6 +81,28 @@ defmodule Membrane.SDL.Plugin.MixProject do
       [plt_local_path: "priv/plts", plt_core_path: "priv/plts"] ++ opts
     else
       opts
+    end
+  end
+
+  defp prepend_llms_links(_) do
+    output_dir = docs()[:output] || "doc"
+    path = Path.join(output_dir, "llms.txt")
+
+    if File.exists?(path) do
+      existing = File.read!(path)
+
+      footer = """
+
+
+      ## See Also
+
+      - [Membrane Framework AI Skill](https://hexdocs.pm/membrane_core/skill.md)
+      - [Membrane Core](https://hexdocs.pm/membrane_core/llms.txt)
+      """
+
+      File.write!(path, String.trim_trailing(existing) <> footer)
+    else
+      IO.warn("#{path} not found — llms.txt was not generated, check your ex_doc configuration")
     end
   end
 end
