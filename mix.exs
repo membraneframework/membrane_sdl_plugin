@@ -1,7 +1,7 @@
 defmodule Membrane.SDL.Plugin.MixProject do
   use Mix.Project
 
-  @version "0.18.6"
+  @version "0.18.7"
   @github_url "https://github.com/membraneframework/membrane_sdl_plugin"
 
   def project do
@@ -65,9 +65,9 @@ defmodule Membrane.SDL.Plugin.MixProject do
       {:membrane_h26x_plugin, "~> 0.10.0", only: :test},
       {:membrane_hackney_plugin, "~> 0.11.0", only: :test},
       # Development
-      {:ex_doc, "~> 0.28", only: :dev, runtime: false},
-      {:dialyxir, "~> 1.1", only: :dev, runtime: false},
-      {:credo, "~> 1.6", only: :dev, runtime: false}
+      {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
+      {:dialyxir, ">= 0.0.0", only: :dev, runtime: false},
+      {:credo, ">= 0.0.0", only: :dev, runtime: false}
     ]
   end
 
