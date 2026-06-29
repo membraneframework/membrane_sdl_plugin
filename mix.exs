@@ -65,7 +65,7 @@ defmodule Membrane.SDL.Plugin.MixProject do
       {:membrane_h26x_plugin, "~> 0.10.0", only: :test},
       {:membrane_hackney_plugin, "~> 0.11.0", only: :test},
       # Development
-      {:ex_doc, "~> 0.40", only: :dev, runtime: false},
+      {:ex_doc, ">= 0.40.0", only: :dev, runtime: false},
       {:dialyxir, ">= 0.0.0", only: :dev, runtime: false},
       {:credo, ">= 0.0.0", only: :dev, runtime: false}
     ]
