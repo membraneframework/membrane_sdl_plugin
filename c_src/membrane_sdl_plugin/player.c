@@ -57,6 +57,13 @@ exit_create:
 
 UNIFEX_TERM display_frame(UnifexEnv *env, UnifexPayload *payload,
                           State *state) {
+  // SDL reads a full IYUV frame from the payload, so a shorter one would be
+  // read out of bounds.
+  size_t frame_size = (size_t)state->width * state->height +
+                      2 * ((state->width + 1) / 2) * ((state->height + 1) / 2);
+  if (payload->size < frame_size) {
+    return display_frame_result_error(env, "invalid_frame_size");
+  }
 
   SDL_UpdateTexture(state->texture, NULL, payload->data, state->width);
   SDL_RenderClear(state->renderer);
